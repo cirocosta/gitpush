@@ -12,7 +12,7 @@ const dirs = initDirs();
 const port = Math.floor(Math.random() * ((1 << 16) - 1e4)) + 1e4;
 
 test('create, push to, and clone a repo', async t => {
-  let repos = pushover(repoDir);
+  let repos = pushover(dirs.repo);
 
   repos.on('push', push => {
     t.equal(push.repo, 'doom');
@@ -32,7 +32,7 @@ test('create, push to, and clone a repo', async t => {
 
   process.chdir(dirs.dst);
   await run(`git clone http://127.0.0.1:${port}/doom`);
-  t.ok(fs.existsSync(dist.dst + '/doom/a.txt'));
+  t.ok(fs.existsSync(`${dirs.dst}/doom/a.txt`));
   server.close();
 
   t.end();

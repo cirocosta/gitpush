@@ -13,7 +13,7 @@ const port = Math.floor(Math.random() * ((1 << 16) - 1e4)) + 1e4;
 test('clone into programatic directories', async t => {
   let repos = pushover(dir => {
     t.equal(dir, 'doom.git');
-    return path.join(targetDir, dir);
+    return path.join(dirs.target, dir);
   });
 
   repos.on('push', push => {
@@ -24,18 +24,18 @@ test('clone into programatic directories', async t => {
   let server = http.createServer(repos.handle.bind(repos));
   server.listen(port, '127.0.0.1');
 
-  process.chdir(srcDir);
+  process.chdir(dirs.src);
 
   await run(`git init`);
-  fs.writeFileSync(srcDir + '/a.txt', 'abcd');
+  fs.writeFileSync(`${dirs.src}/a.txt`, 'abcd');
   await run(`git add a.txt`);
   await run(`git commit -am 'a!!'`);
   await run(`git push http://127.0.0.1:${port}/doom.git master`);
 
-  process.chdir(dstDir);
+  process.chdir(dirs.dst);
   await run(`git clone http://127.0.0.1:${port}/doom.git`);
-  t.ok(fs.existsSync(dstDir + '/doom/a.txt'));
-  t.ok(fs.existsSync(targetDir + '/doom.git/HEAD'));
+  t.ok(fs.existsSync(`${dirs.dst}/doom/a.txt`));
+  t.ok(fs.existsSync(`${dirs.target}/doom.git/HEAD`));
 
   server.close();
   t.end();

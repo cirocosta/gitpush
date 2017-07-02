@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const logger = require('debug')('pushover:test');
 const {tmpdir} = require('os');
 const {spawn} = require('child_process');
@@ -55,4 +57,5 @@ function run(command) {
 
 module.exports = {
   run,
+  initDirs
 };
