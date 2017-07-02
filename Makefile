@@ -10,9 +10,9 @@ fmt:
 		--single-quote \
 		--no-bracket-spacing \
 		--trailing-comma es5 \
-		--write \"{test/**/*.js,*.js}\" 
+		--write "{lib/**/*.js,test/**/*.js,*.js}" 
 	$(ESLINT) \
-		--fix "*.js"
+		--fix "{lib/**/*.js,test/**/*.js,*.js}"
 
  
 .PHONY: test fmt

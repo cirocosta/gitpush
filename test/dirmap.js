@@ -1,40 +1,24 @@
-const logger = require('debug')('pushover:test');
-const pushover = require('../');
 const fs = require('fs');
 const path = require('path');
-const exists = fs.exists || path.exists;
 const http = require('http');
-const { test}  = require('tap');
-const { tmpdir } = require('os');
-const { run } = require('./test-util.js');
+const logger = require('debug')('pushover:test');
+const pushover = require('../');
 
-const repoDir = path.join(tmpdir(), Math.floor(Math.random() * (1<<30)).toString(16));
-const srcDir = path.join(tmpdir(), Math.floor(Math.random() * (1<<30)).toString(16));
-const dstDir = path.join(tmpdir(), Math.floor(Math.random() * (1<<30)).toString(16));
-const targetDir = path.join(tmpdir(), Math.floor(Math.random() * (1<<30)).toString(16));
+const {test} = require('tap');
+const {run, initDirs} = require('./test-util.js');
 
-fs.mkdirSync(repoDir, 0700);
-fs.mkdirSync(srcDir, 0700);
-fs.mkdirSync(dstDir, 0700);
-fs.mkdirSync(targetDir, 0700);
+const dirs = initDirs();
+const port = Math.floor(Math.random() * ((1 << 16) - 1e4)) + 1e4;
 
-
-logger('repoDir: %s', repoDir);
-logger('srcDir: %s', srcDir);
-logger('dstDir: %s', dstDir);
-logger('targetDir: %s', targetDir);
-
-let port = 3000;
-
-test('clone into programatic directories', async (t) => {
-  let repos = pushover((dir) => {
-      t.equal(dir, 'doom.git');
-      return path.join(targetDir, dir);
+test('clone into programatic directories', async t => {
+  let repos = pushover(dir => {
+    t.equal(dir, 'doom.git');
+    return path.join(targetDir, dir);
   });
 
-  repos.on('push', (push) => {
-      t.equal(push.repo, 'doom.git');
-      push.accept();
+  repos.on('push', push => {
+    t.equal(push.repo, 'doom.git');
+    push.accept();
   });
 
   let server = http.createServer(repos.handle.bind(repos));
@@ -52,7 +36,7 @@ test('clone into programatic directories', async (t) => {
   await run(`git clone http://127.0.0.1:${port}/doom.git`);
   t.ok(fs.existsSync(dstDir + '/doom/a.txt'));
   t.ok(fs.existsSync(targetDir + '/doom.git/HEAD'));
-    
+
   server.close();
   t.end();
 });
