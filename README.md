@@ -12,3 +12,4 @@
 npm i gitpush
 ```
 
+[![Build Status](https://travis-ci.org/cirocosta/gitpush.svg?branch=master)](https://travis-ci.org/cirocosta/gitpush)
