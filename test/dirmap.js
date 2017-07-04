@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
-const logger = require('debug')('pushover:test');
-const pushover = require('../');
+const logger = require('debug')('gitpush:test');
+const gitpush = require('../');
 
 const {test} = require('tap');
 const {run, initDirs} = require('./test-util.js');
@@ -11,7 +11,7 @@ const dirs = initDirs();
 const port = Math.floor(Math.random() * ((1 << 16) - 1e4)) + 1e4;
 
 test('clone into programatic directories', async t => {
-  let repos = pushover(dir => {
+  let repos = gitpush(dir => {
     t.equal(dir, 'doom.git');
     return path.join(dirs.target, dir);
   });

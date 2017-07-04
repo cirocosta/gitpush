@@ -1,5 +1,5 @@
-var pushover = require('../');
-var repos = pushover('/tmp/repos');
+var gitpush = require('../');
+var repos = gitpush('/tmp/repos');
 
 repos.on('push', function (push) {
     console.log('push ' + push.repo + '/' + push.commit

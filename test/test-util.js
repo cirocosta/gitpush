@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const tempy = require('tempy');
-const logger = require('debug')('pushover:test');
+const logger = require('debug')('gitpush:test');
 const {spawn} = require('child_process');
 
 function initDirs() {
