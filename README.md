@@ -1,6 +1,6 @@
 <h1 align="center">gitpush 📝  </h1>
 
-<h5 align="center">Git over HTTP with Events</h5>
+<h5 align="center">Git over HTTP with Push and Fetch Events</h5>
 
 <br/>
 
