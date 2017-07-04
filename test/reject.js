@@ -10,8 +10,7 @@ const {run, initDirs} = require('./test-util.js');
 const dirs = initDirs();
 const port = Math.floor(Math.random() * ((1 << 16) - 1e4)) + 1e4;
 
-
-test('create, push to, and clone a repo', async (t) => {
+test('create, push to, and clone a repo', async t => {
   let lastCommit = '';
   let repos = pushover(dirs.repo, {autoCreate: false});
 
@@ -50,10 +49,10 @@ test('create, push to, and clone a repo', async (t) => {
   try {
     await run(`git push http://127.0.0.1:${port}/doom.git master`);
     t.notOk(true);
-  } catch (err) { } 
+  } catch (err) {}
 
   try {
-    await run ('git', ['log'], {cwd: repoDir + '/doom.git'});
+    await run('git', ['log'], {cwd: repoDir + '/doom.git'});
     t.notOk(true);
-  } catch (err) { } 
+  } catch (err) {}
 });
