@@ -1,43 +1,27 @@
 const fs = require('fs');
 const path = require('path');
+const tempy = require('tempy');
 const logger = require('debug')('pushover:test');
-const {tmpdir} = require('os');
 const {spawn} = require('child_process');
 
 function initDirs() {
-  const repo = path.join(
-    tmpdir(),
-    Math.floor(Math.random() * (1 << 30)).toString(16)
-  );
-  const src = path.join(
-    tmpdir(),
-    Math.floor(Math.random() * (1 << 30)).toString(16)
-  );
-  const dst = path.join(
-    tmpdir(),
-    Math.floor(Math.random() * (1 << 30)).toString(16)
-  );
-  const target = path.join(
-    tmpdir(),
-    Math.floor(Math.random() * (1 << 30)).toString(16)
-  );
+  const dirs = {
+    repo: tempy.directory(),
+    src: tempy.directory(),
+    dst: tempy.directory(),
+    target: tempy.directory(),
+  };
 
-  fs.mkdirSync(repo, 0700);
-  fs.mkdirSync(src, 0700);
-  fs.mkdirSync(dst, 0700);
-  fs.mkdirSync(target, 0700);
+  logger('dirs: %O', dirs);
 
-  logger('repo: %s', repo);
-  logger('src : %s', src);
-  logger('dst : %s', dst);
-  logger('trgt: %s', target);
-
-  return {repo, src, dst, target};
+  return dirs;
 }
 
 function run(command) {
   const args = command.split(' ');
-  const proc = spawn(args.shift(), args);
+  const proc = spawn(args.shift(), args, {
+    shell: true,
+  });
 
   let result = '';
 
@@ -50,12 +34,12 @@ function run(command) {
         return resolve(result);
       }
 
-      reject(new Error(`Execution failed with code ${code}`));
+      reject(new Error(`Execution of [${command}] failed with code ${code}`));
     });
   });
 }
 
 module.exports = {
   run,
-  initDirs
+  initDirs,
 };
