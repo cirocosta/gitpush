@@ -1,5 +1,5 @@
-var gitpush = require('../');
-var repos = gitpush('/tmp/repos');
+var gpusher = require('../');
+var repos = gpusher('/tmp/repos');
 
 repos.on('push', function (push) {
     console.log('push ' + push.repo + '/' + push.commit

@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
-const logger = require('debug')('gitpush:test');
-const gitpush = require('../');
+const logger = require('debug')('gpusher:test');
+const gpusher = require('../');
 
 const {test} = require('tap');
 const {run, initDirs} = require('./test-util.js');
@@ -12,7 +12,7 @@ const port = Math.floor(Math.random() * ((1 << 16) - 1e4)) + 1e4;
 
 test('create, push to, and clone a repo', async t => {
   let lastCommit = '';
-  let repos = gitpush(dirs.repo, {autoCreate: false});
+  let repos = gpusher(dirs.repo, {autoCreate: false});
 
   repos.on('push', function(push) {
     t.equal(push.repo, 'doom.git', 'repo name');

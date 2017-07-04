@@ -1,4 +1,4 @@
-<h1 align="center">gitpush 📝  </h1>
+<h1 align="center">gpusher 📝  </h1>
 
 <h5 align="center">Git over HTTP with Push and Fetch Events</h5>
 
@@ -9,7 +9,7 @@
 ### Quickstart
 
 ```
-npm i gitpush
+npm i gpusher
 ```
 
-[![Build Status](https://travis-ci.org/cirocosta/gitpush.svg?branch=master)](https://travis-ci.org/cirocosta/gitpush)
+[![Build Status](https://travis-ci.org/cirocosta/gpusher.svg?branch=master)](https://travis-ci.org/cirocosta/gpusher)
