@@ -34,7 +34,11 @@ function run(command) {
         return resolve(result);
       }
 
-      reject(new Error(`Execution of [${command}] failed with code ${code}`));
+      reject(
+        new Error(
+          `Execution of [${command}] failed with code ${code}\n${result}`
+        )
+      );
     });
   });
 }
