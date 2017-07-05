@@ -1,13 +1,15 @@
-let fs = require('fs');
-let path = require('path');
-let http = require('http');
-let mkdirp = require('mkdirp');
-let inherits = require('inherits');
+const log = require('debug')('gpusher:index');
+const fs = require('fs');
+const path = require('path');
+const http = require('http');
+const mkdirp = require('mkdirp');
+const inherits = require('inherits');
+const rimraf = require('rimraf');
 
-let spawn = require('child_process').spawn;
-let EventEmitter = require('events').EventEmitter;
+const {spawn} = require('child_process');
+const {EventEmitter} = require('events');
 
-let onexit = require('./lib/onexit');
+const onexit = require('./lib/onexit');
 
 module.exports = function(repoDir, opts) {
   if (!opts) opts = {};
@@ -31,18 +33,44 @@ function Git(dirMap, opts) {
 inherits(Git, EventEmitter);
 
 Git.prototype.list = function(cb) {
+  log('list');
+
   fs.readdir(this.dirMap(), cb);
 };
 
 Git.prototype.exists = function(repo, cb) {
+  log('exists: %s', repo);
   (fs.exists || path.exists)(this.dirMap(repo), cb);
 };
 
 Git.prototype.mkdir = function(dir, cb) {
+  log('mkdir: %s', dir);
+
   mkdirp(this.dirMap(dir), cb);
 };
 
+Git.prototype.remove = function(repo, cb) {
+  log('remove: %s', repo);
+
+  if (typeof cb !== 'function') {
+    cb = function() {};
+  }
+
+  if (!/\.git$/.test(repo)) {
+    repo += '.git';
+  }
+
+  let dir = this.dirMap(repo);
+  if (fs.existsSync(dir)) {
+    rimraf(dir, cb);
+  } else {
+    cb();
+  }
+};
+
 Git.prototype.create = function(repo, cb) {
+  log('create: %s', repo);
+
   let self = this;
   if (typeof cb !== 'function') cb = function() {};
   let cwd = process.cwd();
@@ -71,8 +99,16 @@ Git.prototype.create = function(repo, cb) {
 
     onexit(ps, function(code) {
       if (!cb) {
-      } else if (code) cb(err || true);
-      else cb(null);
+        return;
+      }
+
+      if (code) {
+        cb(err || true);
+        return;
+      }
+
+      log('create: bare init succeeded (%s)', repo);
+      cb(null);
     });
   }
 };
