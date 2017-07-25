@@ -75,13 +75,13 @@ commit=myrepo
 
 The `handle` function takes three arguments, being the last one an optional `opts` mapping:
 
-```
+```js
 function handle (req, res, opts);
 ```
 
 where `opts` can take the following values:
 
-```
+```js
 // a function that takes a repository (string) and returns
 // a `through` function that takes a chunk and then decides what 
 // to do with it. In order to forward the chunk into the next pipe
@@ -99,6 +99,7 @@ This `transform` method creator allows one to inject code into the pipe stream f
 This way one can create a rate-limiter:
 
 
+```js
   let server = http.createServer((req, res) => {
     return function rateLimitter(repo) {
       let limit = 1024;
@@ -116,6 +117,7 @@ This way one can create a rate-limiter:
       transform: rateLimitter,
     });
   });
+```
 
 
 
