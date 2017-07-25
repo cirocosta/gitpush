@@ -26,7 +26,6 @@ test('can reject a clone of empty repo - info', async t => {
   process.chdir(dirs.dst);
   try {
     let res = await run(`git clone http://127.0.0.1:${port}/doom.git master`);
-    console.log(res);
     t.notOk(true);
   } catch (err) {}
 
@@ -60,7 +59,6 @@ test('can reject a clone of non-empty repo - fetch', async t => {
   process.chdir(dirs.dst);
   try {
     let res = await run(`git clone http://127.0.0.1:${port}/doom.git master`);
-    console.log(res);
     t.notOk(true);
   } catch (err) {}
 

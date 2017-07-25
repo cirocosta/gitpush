@@ -73,7 +73,51 @@ commit=myrepo
 
 #### Rate-limiting big pushes
 
-TODO
+The `handle` function takes three arguments, being the last one an optional `opts` mapping:
+
+```
+function handle (req, res, opts);
+```
+
+where `opts` can take the following values:
+
+```
+// a function that takes a repository (string) and returns
+// a `through` function that takes a chunk and then decides what 
+// to do with it. In order to forward the chunk into the next pipe
+// just `this.queue(chunk)`;
+opts.transform = function (repo) { 
+  // return a `through` function
+  return function (chunk) { 
+    this.queue(chunk);
+  }
+}
+```
+
+This `transform` method creator allows one to inject code into the pipe stream from `request` to `git rpc` sitting right after the `decoding` phase (when `gzip` decoder is sending bytes ahead).
+
+This way one can create a rate-limiter:
+
+
+  let server = http.createServer((req, res) => {
+    return function rateLimitter(repo) {
+      let limit = 1024;
+      return function bytesCounter(chunk) {
+        limit -= chunk.length;
+        if (limit > 0) {
+          return this.queue(chunk);
+        }
+
+        this.emit('error', new Error('quota limit reached'));
+      };
+    }
+
+    repos.handle(req, res, {
+      transform: rateLimitter,
+    });
+  });
+
+
 
 #### Performing a request and streaming the response to the client
 
