@@ -101,7 +101,7 @@ This way one can create a rate-limiter:
 
 ```js
   let server = http.createServer((req, res) => {
-    return function rateLimitter(repo) {
+    function rateLimitter(repo) {
       let limit = 1024;
       return function bytesCounter(chunk) {
         limit -= chunk.length;
