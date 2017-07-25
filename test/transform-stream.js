@@ -3,6 +3,7 @@ const gpusher = require('../');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
+const through = require('through');
 
 const {tmpdir} = require('os');
 const {test} = require('tap');
@@ -23,20 +24,14 @@ test('transforming can be applied', async t => {
     push.accept();
   });
 
+  let transform = through(function(chunk) {
+    counter.doom += chunk.length;
+    this.queue(chunk);
+  });
+
   let server = http.createServer((req, res) => {
-    function createBytesCounter(mapping) {
-      return function createChunker(repo) {
-        mapping[repo] = 0;
-
-        return function bytesCounter(chunk) {
-          mapping[repo] += chunk.length;
-          this.queue(chunk);
-        };
-      };
-    }
-
     repos.handle(req, res, {
-      transform: createBytesCounter(counter),
+      transform,
     });
   });
 
